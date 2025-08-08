@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HanzalahCode - Front-End Developer</title>
+    <link rel="icon" type="image/x-icon" href="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzIiIGhlaWdodD0iMzIiIHZpZXdCb3g9IjAgMCAzMiAzMiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiByeD0iNCIgZmlsbD0iI0ZGRkZGRiIvPgo8dGV4dCB4PSI1IiB5PSIyMiIgZm9udC1mYW1pbHk9IkFyaWFsLCBzYW5zLXNlcmlmIiBmb250LXNpemU9IjE0IiBmb250LXdlaWdodD0iYm9sZCIgZmlsbD0iI0ZGN0YxMSI+SEM8L3RleHQ+Cjwvc3ZnPgo=">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'dark-blue': '#0D1B2A',
+                        'accent-orange': '#FF7F11',
+                        'subtle-grey': '#B0B0B0'
+                    },
+                    fontFamily: {
+                        'sans': ['Inter', 'system-ui', 'sans-serif']
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'glow': 'glow 2s ease-in-out infinite alternate',
+                        'slideInLeft': 'slideInLeft 0.8s ease-out',
+                        'slideInRight': 'slideInRight 0.8s ease-out',
+                        'fadeInScale': 'fadeInScale 0.6s ease-out',
+                        'bounce-slow': 'bounce 3s infinite',
+                        'pulse-slow': 'pulse 3s infinite',
+                        'wiggle': 'wiggle 1s ease-in-out infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-dark-blue text-white overflow-x-hidden">
+    <!-- Cursor Trail Effect -->
+    <div id="cursor-trail"></div>
+    
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="fixed inset-0 bg-dark-blue z-[100] flex items-center justify-center">
+        <div class="text-center">
+            <div class="loading-logo text-6xl font-bold text-accent-orange mb-4 glow-text">HC</div>
+            <div class="loading-bar"></div>
+            <p class="text-subtle-grey mt-4">Loading Portfolio...</p>
+        </div>
+    </div>
+
+    <!-- Particles Background -->
+    <div id="particles" class="fixed inset-0 pointer-events-none z-0"></div>
+
+    <!-- Floating Action Button -->
+    <div id="fab" class="fixed bottom-6 right-6 z-40">
+        <button id="fab-main" class="fab-button">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
+        </button>
+        <div id="fab-menu" class="fab-menu hidden">
+            <button class="fab-item" data-action="theme-toggle" title="Toggle Theme">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                </svg>
+            </button>
+            <button class="fab-item" data-action="download-cv" title="Download CV">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                </svg>
+            </button>
+            <button class="fab-item" data-action="share" title="Share Portfolio">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div id="progress-bar" class="fixed top-0 left-0 h-1 bg-accent-orange z-50 transition-all duration-300"></div>
+
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full bg-dark-blue/90 backdrop-blur-md z-50 transition-all duration-300" id="navbar">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="text-2xl font-bold text-accent-orange">
+                    <span class="glow-text">HanzalahCode</span>
+                </div>
+                <div class="hidden lg:flex space-x-8">
+                    <a href="#home" class="nav-link active">Home</a>
+                    <a href="#about" class="nav-link">About</a>
+                    <a href="#services" class="nav-link">Services</a>
+                    <a href="#projects" class="nav-link">Projects</a>
+                    <a href="#skills" class="nav-link">Skills</a>
+                    <a href="#testimonials" class="nav-link">Testimonials</a>
+                    <a href="#contact" class="nav-link">Contact</a>
+                </div>
+                <div class="lg:hidden">
+                    <button id="mobile-menu-btn" class="text-white focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="lg:hidden hidden bg-dark-blue/95 backdrop-blur-md">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="#home" class="mobile-nav-link">Home</a>
+                <a href="#about" class="mobile-nav-link">About</a>
+                <a href="#services" class="mobile-nav-link">Services</a>
+                <a href="#projects" class="mobile-nav-link">Projects</a>
+                <a href="#skills" class="mobile-nav-link">Skills</a>
+                <a href="#testimonials" class="mobile-nav-link">Testimonials</a>
+                <a href="#contact" class="mobile-nav-link">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="min-h-screen flex items-center justify-center relative">
+        <div class="text-center z-10 max-w-4xl mx-auto px-4">
+            
+            
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 fade-in">
+                Hi, I'm <span class="text-accent-orange glow-text">Hanzalah</span>
+            </h1>
+            <div class="text-2xl md:text-4xl mb-8 h-16 flex items-center justify-center">
+                <span id="typing-text" class="text-subtle-grey"></span>
+                <span class="typing-cursor">|</span>
+            </div>
+            <p class="text-lg md:text-xl text-subtle-grey mb-12 max-w-2xl mx-auto fade-in-delay">
+                Crafting beautiful, responsive web experiences with modern technologies and creative design solutions.
+            </p>
+            <div class="space-x-4 fade-in-delay-2">
+                <a href="#projects" class="cta-button">View My Work</a>
+                <a href="#contact" class="cta-button-outline">Get In Touch</a>
+            </div>
+            
+            <!-- Live Stats Counter -->
+            <div class="grid grid-cols-3 gap-8 mt-16 max-w-md mx-auto">
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-accent-orange counter" data-target="50">0</div>
+                    <div class="text-sm text-subtle-grey">Projects</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-accent-orange counter" data-target="3">0</div>
+                    <div class="text-sm text-subtle-grey">Years Exp</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-3xl font-bold text-accent-orange counter" data-target="100">0</div>
+                    <div class="text-sm text-subtle-grey">Happy Clients</div>
+                </div>
+            </div>
+        </div>
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce">
+            <svg class="w-6 h-6 text-accent-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+            </svg>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-dark-blue/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="section-title">About Me</h2>
+                <div class="section-divider"></div>
+            </div>
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div class="reveal-left">
+                    <div class="relative">
+                        <div class="w-80 h-80 mx-auto rounded-full overflow-hidden border-4 border-accent-orange glow-border">
+                            <img src="/placeholder.svg?height=320&width=320&text=Hanzalah" alt="Hanzalah" class="w-full h-full object-cover">
+                        </div>
+                        <div class="absolute -top-4 -right-4 w-24 h-24 bg-accent-orange rounded-full flex items-center justify-center glow-circle">
+                            <svg class="w-12 h-12 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"/>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="reveal-right">
+                    <h3 class="text-3xl font-bold mb-6 text-accent-orange">Front-End Developer & Creative Coder</h3>
+                    <p class="text-lg text-subtle-grey mb-6 leading-relaxed">
+                        I'm a passionate front-end developer with a keen eye for design and a love for creating 
+                        interactive web experiences. With expertise in HTML, CSS, JavaScript, and modern frameworks 
+                        like Tailwind CSS, I bring ideas to life through clean, efficient code.
+                    </p>
+                    <p class="text-lg text-subtle-grey mb-8 leading-relaxed">
+                        When I'm not coding, you'll find me exploring new web technologies, contributing to open-source 
+                        projects, or experimenting with creative animations and user interfaces.
+                    </p>
+                    
+                    <!-- Interactive Timeline -->
+                    <div class="timeline mb-8">
+                        <div class="timeline-item active" data-year="2021">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <h4 class="font-bold text-accent-orange">Started Web Development</h4>
+                                <p class="text-subtle-grey text-sm">Began learning HTML, CSS, and JavaScript</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item" data-year="2022">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <h4 class="font-bold text-accent-orange">First Freelance Projects</h4>
+                                <p class="text-subtle-grey text-sm">Started working with clients on web projects</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item" data-year="2023">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <h4 class="font-bold text-accent-orange">Advanced Skills</h4>
+                                <p class="text-subtle-grey text-sm">Mastered modern frameworks and tools</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item" data-year="2024">
+                            <div class="timeline-dot"></div>
+                            <div class="timeline-content">
+                                <h4 class="font-bold text-accent-orange">Full-Stack Journey</h4>
+                                <p class="text-subtle-grey text-sm">Expanding into backend technologies</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="stat-card">
+                            <div class="text-3xl font-bold text-accent-orange">50+</div>
+                            <div class="text-subtle-grey">Projects Completed</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="text-3xl font-bold text-accent-orange">3+</div>
+                            <div class="text-subtle-grey">Years Experience</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section (NEW) -->
+    <section id="services" class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="section-title">My Services</h2>
+                <div class="section-divider"></div>
+                <p class="text-lg text-subtle-grey mt-4">What I can do for you</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Service Card 1 -->
+                <div class="service-card" data-service="web-development">
+                    <div class="service-icon">
+                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 text-accent-orange">Web Development</h3>
+                    <p class="text-subtle-grey mb-6">Custom websites and web applications built with modern technologies and best practices.</p>
+                    <ul class="text-sm text-subtle-grey space-y-2 mb-6">
+                        <li class="flex items-center"><span class="text-accent-orange mr-2">✓</span> Responsive Design</li>
+                        <li class="flex items-center"><span class="text-accent-orange mr-2">✓</span> Performance Optimization</li>
+                        <li class="flex items-center"><span class="text-accent-orange mr-2">✓</span> SEO Friendly</li>
+                        <li class="flex items-center"><span class="text-accent-orange mr-2">✓</span> Cross-browser Compatible</li>
+                    </ul>
+                    <div class="service-price">Starting at $500</div>
+                </div>
+
+                <!-- Service Card 2 -->
+                <div class="service-card" data-service="ui-design">
+                    <div class="service-icon">
+                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zM21 5a2 2 0 00-2-2h-4a2 2 0 00-2 2v12a4 4 0 004 4h4a2 2 0 002-2V5z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 text-accent-orange">UI/UX Design</h3>
+                    <p class="text-subtle-grey mb-6">Beautiful and intuitive user interfaces that provide exceptional user experiences.</p>
+                    <ul class="text-sm text-subtle-grey space-y-2 mb-6">
+                        <li class="flex items-center"><span class="text-accent-orange mr-2">✓</span> User Research</li>
+                        <li class="flex items-center"><span class="text-accent-orange mr-2">✓</span> Wireframing</li>
+                        <li class="flex items-center"><span class="text-accent-orange mr-2">✓</span> Prototyping</li>
+                        <li class="flex items-center"><span class="text-accent-orange mr-2">✓</span> Design Systems</li>
+                    </ul>
+                    <div class="service-price">Starting at $300</div>
+                </div>
+
+                <!-- Service Card 3 -->
+                <div class="service-card" data-service="maintenance">
+                    <div class="service-icon">
+                        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4 text-accent-orange">Website Maintenance</h3>
+                    <p class="text-subtle-grey mb-6">Keep your website running smoothly with regular updates and maintenance services.</p>
+                    <ul class="text-sm text-subtle-grey space-y-2 mb-6">
+                        <li class="flex items-center"><span class="text-accent-orange mr-2">✓</span> Regular Updates</li>
+                        <li class="flex items-center"><span class="text-accent-orange mr-2">✓</span> Security Monitoring</li>
+                        <li class="flex items-center"><span class="text-accent-orange mr-2">✓</span> Performance Optimization</li>
+                        <li class="flex items-center"><span class="text-accent-orange mr-2">✓</span> Content Updates</li>
+                    </ul>
+                    <div class="service-price">Starting at $100/month</div>
+                </div>
+            </div>
+
+            <!-- Service Process -->
+            <div class="mt-20">
+                <h3 class="text-2xl font-bold text-center mb-12 text-accent-orange">My Process</h3>
+                <div class="grid md:grid-cols-4 gap-8">
+                    <div class="process-step text-center">
+                        <div class="process-number">1</div>
+                        <h4 class="font-bold mb-2">Discovery</h4>
+                        <p class="text-subtle-grey text-sm">Understanding your needs and goals</p>
+                    </div>
+                    <div class="process-step text-center">
+                        <div class="process-number">2</div>
+                        <h4 class="font-bold mb-2">Planning</h4>
+                        <p class="text-subtle-grey text-sm">Creating a detailed project roadmap</p>
+                    </div>
+                    <div class="process-step text-center">
+                        <div class="process-number">3</div>
+                        <h4 class="font-bold mb-2">Development</h4>
+                        <p class="text-subtle-grey text-sm">Building your solution with precision</p>
+                    </div>
+                    <div class="process-step text-center">
+                        <div class="process-number">4</div>
+                        <h4 class="font-bold mb-2">Launch</h4>
+                        <p class="text-subtle-grey text-sm">Deploying and supporting your project</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="py-20 bg-dark-blue/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="section-title">Featured Projects</h2>
+                <div class="section-divider"></div>
+                <p class="text-lg text-subtle-grey mt-4">Here are some of my recent works</p>
+            </div>
+            
+            <!-- Project Filter -->
+            <div class="flex justify-center mb-12">
+                <div class="project-filter">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="web">Web Apps</button>
+                    <button class="filter-btn" data-filter="design">Design</button>
+                    <button class="filter-btn" data-filter="mobile">Mobile</button>
+                </div>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8" id="projects-grid">
+                <div class="project-card" data-tilt data-category="web">
+                    <div class="project-image">
+                        <img src="/placeholder.svg?height=200&width=300&text=E-Commerce+Platform" alt="E-Commerce Platform">
+                        <div class="project-overlay">
+                            <h4 class="text-xl font-bold mb-2">E-Commerce Platform</h4>
+                            <p class="text-sm mb-4">Modern shopping experience with responsive design</p>
+                            <div class="flex space-x-2">
+                                <a href="#" class="project-btn">Live Demo</a>
+                                <a href="#" class="project-btn-outline">Code</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">E-Commerce Platform</h3>
+                        <p class="text-subtle-grey mb-4">A fully responsive e-commerce website built with HTML, CSS, and JavaScript featuring product filtering and cart functionality.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="tech-tag">HTML</span>
+                            <span class="tech-tag">CSS</span>
+                            <span class="tech-tag">JavaScript</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card" data-tilt data-category="design">
+                    <div class="project-image">
+                        <img src="/placeholder.svg?height=200&width=300&text=Portfolio+Dashboard" alt="Portfolio Dashboard">
+                        <div class="project-overlay">
+                            <h4 class="text-xl font-bold mb-2">Portfolio Dashboard</h4>
+                            <p class="text-sm mb-4">Interactive dashboard with data visualization</p>
+                            <div class="flex space-x-2">
+                                <a href="#" class="project-btn">Live Demo</a>
+                                <a href="#" class="project-btn-outline">Code</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Portfolio Dashboard</h3>
+                        <p class="text-subtle-grey mb-4">An interactive dashboard showcasing data visualization and modern UI components with smooth animations.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="tech-tag">Tailwind CSS</span>
+                            <span class="tech-tag">JavaScript</span>
+                            <span class="tech-tag">Chart.js</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card" data-tilt data-category="web">
+                    <div class="project-image">
+                        <img src="/placeholder.svg?height=200&width=300&text=Restaurant+Website" alt="Restaurant Website">
+                        <div class="project-overlay">
+                            <h4 class="text-xl font-bold mb-2">Restaurant Website</h4>
+                            <p class="text-sm mb-4">Elegant dining experience showcase</p>
+                            <div class="flex space-x-2">
+                                <a href="#" class="project-btn">Live Demo</a>
+                                <a href="#" class="project-btn-outline">Code</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Restaurant Website</h3>
+                        <p class="text-subtle-grey mb-4">A beautiful restaurant website featuring menu showcase, reservation system, and location details.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="tech-tag">HTML</span>
+                            <span class="tech-tag">CSS</span>
+                            <span class="tech-tag">JavaScript</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card" data-tilt data-category="mobile">
+                    <div class="project-image">
+                        <img src="/placeholder.svg?height=200&width=300&text=Mobile+App+UI" alt="Mobile App UI">
+                        <div class="project-overlay">
+                            <h4 class="text-xl font-bold mb-2">Mobile App UI</h4>
+                            <p class="text-sm mb-4">Modern mobile interface design</p>
+                            <div class="flex space-x-2">
+                                <a href="#" class="project-btn">Live Demo</a>
+                                <a href="#" class="project-btn-outline">Code</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Mobile App UI</h3>
+                        <p class="text-subtle-grey mb-4">Clean and intuitive mobile app interface with smooth animations and user-friendly navigation.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="tech-tag">React Native</span>
+                            <span class="tech-tag">UI/UX</span>
+                            <span class="tech-tag">Figma</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card" data-tilt data-category="design">
+                    <div class="project-image">
+                        <img src="/placeholder.svg?height=200&width=300&text=Brand+Identity" alt="Brand Identity">
+                        <div class="project-overlay">
+                            <h4 class="text-xl font-bold mb-2">Brand Identity</h4>
+                            <p class="text-sm mb-4">Complete brand design package</p>
+                            <div class="flex space-x-2">
+                                <a href="#" class="project-btn">Live Demo</a>
+                                <a href="#" class="project-btn-outline">Code</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">Brand Identity</h3>
+                        <p class="text-subtle-grey mb-4">Complete brand identity design including logo, color palette, and brand guidelines.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="tech-tag">Adobe Illustrator</span>
+                            <span class="tech-tag">Branding</span>
+                            <span class="tech-tag">Logo Design</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="project-card" data-tilt data-category="web">
+                    <div class="project-image">
+                        <img src="/placeholder.svg?height=200&width=300&text=SaaS+Platform" alt="SaaS Platform">
+                        <div class="project-overlay">
+                            <h4 class="text-xl font-bold mb-2">SaaS Platform</h4>
+                            <p class="text-sm mb-4">Enterprise software solution</p>
+                            <div class="flex space-x-2">
+                                <a href="#" class="project-btn">Live Demo</a>
+                                <a href="#" class="project-btn-outline">Code</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2">SaaS Platform</h3>
+                        <p class="text-subtle-grey mb-4">Comprehensive SaaS platform with user management, analytics, and subscription handling.</p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="tech-tag">React</span>
+                            <span class="tech-tag">Node.js</span>
+                            <span class="tech-tag">MongoDB</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="py-20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="section-title">Skills & Expertise</h2>
+                <div class="section-divider"></div>
+            </div>
+            <div class="grid md:grid-cols-2 gap-12">
+                <div class="reveal-left">
+                    <h3 class="text-2xl font-bold mb-8 text-accent-orange">Technical Skills</h3>
+                    <div class="space-y-6">
+                        <div class="skill-item">
+                            <div class="flex justify-between mb-2">
+                                <span class="font-medium">HTML5</span>
+                                <span class="text-accent-orange">95%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" data-width="95"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="flex justify-between mb-2">
+                                <span class="font-medium">CSS3</span>
+                                <span class="text-accent-orange">90%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" data-width="90"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="flex justify-between mb-2">
+                                <span class="font-medium">JavaScript</span>
+                                <span class="text-accent-orange">85%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" data-width="85"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item">
+                            <div class="flex justify-between mb-2">
+                                <span class="font-medium">Tailwind CSS</span>
+                                <span class="text-accent-orange">88%</span>
+                            </div>
+                            <div class="skill-bar">
+                                <div class="skill-progress" data-width="88"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="reveal-right">
+                    <h3 class="text-2xl font-bold mb-8 text-accent-orange">Circular Skills</h3>
+                    <div class="grid grid-cols-2 gap-8">
+                        <div class="text-center">
+                            <div class="circular-progress" data-percentage="95">
+                                <div class="circular-progress-inner">
+                                    <div class="percentage">95%</div>
+                                </div>
+                            </div>
+                            <p class="mt-4 font-medium">Responsive Design</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="circular-progress" data-percentage="80">
+                                <div class="circular-progress-inner">
+                                    <div class="percentage">80%</div>
+                                </div>
+                            </div>
+                            <p class="mt-4 font-medium">UI/UX Design</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="circular-progress" data-percentage="85">
+                                <div class="circular-progress-inner">
+                                    <div class="percentage">85%</div>
+                                </div>
+                            </div>
+                            <p class="mt-4 font-medium">Web Animation</p>
+                        </div>
+                        <div class="text-center">
+                            <div class="circular-progress" data-percentage="90">
+                                <div class="circular-progress-inner">
+                                    <div class="percentage">90%</div>
+                                </div>
+                            </div>
+                            <p class="mt-4 font-medium">Performance</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section (NEW) -->
+    <section id="testimonials" class="py-20 bg-dark-blue/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="section-title">What Clients Say</h2>
+                <div class="section-divider"></div>
+                <p class="text-lg text-subtle-grey mt-4">Testimonials from satisfied clients</p>
+            </div>
+            
+            <!-- Testimonials Carousel -->
+            <div class="testimonials-container relative">
+                <div class="testimonials-wrapper" id="testimonials-wrapper">
+                    <!-- Testimonial 1 -->
+                    <div class="testimonial-card active">
+                        <div class="testimonial-content">
+                            <div class="quote-icon">
+                                <svg class="w-8 h-8 text-accent-orange" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
+                                </svg>
+                            </div>
+                            <p class="text-lg text-subtle-grey mb-6 leading-relaxed">
+                                "Hanzalah delivered an exceptional website that exceeded our expectations. His attention to detail and creative approach made our brand stand out online."
+                            </p>
+                            <div class="testimonial-author">
+                                <img src="/placeholder.svg?height=60&width=60&text=Sarah" alt="Sarah Johnson" class="w-12 h-12 rounded-full">
+                                <div class="ml-4">
+                                    <h4 class="font-bold text-accent-orange">Sarah Johnson</h4>
+                                    <p class="text-subtle-grey text-sm">CEO, TechStart Inc.</p>
+                                    <div class="flex text-accent-orange mt-1">
+                                        <span>★★★★★</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Testimonial 2 -->
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <div class="quote-icon">
+                                <svg class="w-8 h-8 text-accent-orange" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
+                                </svg>
+                            </div>
+                            <p class="text-lg text-subtle-grey mb-6 leading-relaxed">
+                                "Working with Hanzalah was a pleasure. He understood our vision perfectly and created a stunning e-commerce platform that boosted our sales by 40%."
+                            </p>
+                            <div class="testimonial-author">
+                                <img src="/placeholder.svg?height=60&width=60&text=Mike" alt="Mike Chen" class="w-12 h-12 rounded-full">
+                                <div class="ml-4">
+                                    <h4 class="font-bold text-accent-orange">Mike Chen</h4>
+                                    <p class="text-subtle-grey text-sm">Founder, StyleHub</p>
+                                    <div class="flex text-accent-orange mt-1">
+                                        <span>★★★★★</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Testimonial 3 -->
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <div class="quote-icon">
+                                <svg class="w-8 h-8 text-accent-orange" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z"/>
+                                </svg>
+                            </div>
+                            <p class="text-lg text-subtle-grey mb-6 leading-relaxed">
+                                "Hanzalah's expertise in modern web technologies is impressive. He delivered a fast, responsive website that our users love. Highly recommended!"
+                            </p>
+                            <div class="testimonial-author">
+                                <img src="/placeholder.svg?height=60&width=60&text=Emma" alt="Emma Davis" class="w-12 h-12 rounded-full">
+                                <div class="ml-4">
+                                    <h4 class="font-bold text-accent-orange">Emma Davis</h4>
+                                    <p class="text-subtle-grey text-sm">Marketing Director, GrowthCo</p>
+                                    <div class="flex text-accent-orange mt-1">
+                                        <span>★★★★★</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Navigation Dots -->
+                <div class="testimonial-dots flex justify-center mt-8 space-x-2">
+                    <button class="dot active" data-slide="0"></button>
+                    <button class="dot" data-slide="1"></button>
+                    <button class="dot" data-slide="2"></button>
+                </div>
+                
+                <!-- Navigation Arrows -->
+                <button class="testimonial-nav testimonial-prev" id="testimonial-prev">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+                    </svg>
+                </button>
+                <button class="testimonial-nav testimonial-next" id="testimonial-next">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <!-- Client Logos -->
+            <div class="mt-16">
+                <h3 class="text-center text-xl font-bold mb-8 text-accent-orange">Trusted by Amazing Companies</h3>
+                <div class="client-logos">
+                    <div class="logo-item">
+                        <img src="/placeholder.svg?height=60&width=120&text=TechStart" alt="TechStart" class="opacity-50 hover:opacity-100 transition-opacity">
+                    </div>
+                    <div class="logo-item">
+                        <img src="/placeholder.svg?height=60&width=120&text=StyleHub" alt="StyleHub" class="opacity-50 hover:opacity-100 transition-opacity">
+                    </div>
+                    <div class="logo-item">
+                        <img src="/placeholder.svg?height=60&width=120&text=GrowthCo" alt="GrowthCo" class="opacity-50 hover:opacity-100 transition-opacity">
+                    </div>
+                    <div class="logo-item">
+                        <img src="/placeholder.svg?height=60&width=120&text=InnovateLab" alt="InnovateLab" class="opacity-50 hover:opacity-100 transition-opacity">
+                    </div>
+                    <div class="logo-item">
+                        <img src="/placeholder.svg?height=60&width=120&text=DigitalFlow" alt="DigitalFlow" class="opacity-50 hover:opacity-100 transition-opacity">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16">
+                <h2 class="section-title">Get In Touch</h2>
+                <div class="section-divider"></div>
+                <p class="text-lg text-subtle-grey mt-4">Let's work together on your next project</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-12">
+                <div class="reveal-left">
+                    <h3 class="text-2xl font-bold mb-6 text-accent-orange">Let's Connect</h3>
+                    <p class="text-subtle-grey mb-8 leading-relaxed">
+                        I'm always interested in new opportunities and exciting projects. 
+                        Whether you have a question or just want to say hi, feel free to reach out!
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-accent-orange/20 rounded-full flex items-center justify-center">
+                                <svg class="w-6 h-6 text-accent-orange" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="font-medium">Email</p>
+                                <p class="text-subtle-grey">hanzalah@example.com</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-accent-orange/20 rounded-full flex items-center justify-center">
+                                <svg class="w-6 h-6 text-accent-orange" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="font-medium">Location</p>
+                                <p class="text-subtle-grey">Remote / Worldwide</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-accent-orange/20 rounded-full flex items-center justify-center">
+                                <svg class="w-6 h-6 text-accent-orange" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
+                                </svg>
+                            </div>
+                            <div>
+                                <p class="font-medium">Phone</p>
+                                <p class="text-subtle-grey">+1 (555) 123-4567</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="reveal-right">
+                    <form id="contact-form" class="space-y-6">
+                        <div class="floating-label-group">
+                            <input type="text" id="name" name="name" required class="floating-input">
+                            <label for="name" class="floating-label">Your Name</label>
+                        </div>
+                        <div class="floating-label-group">
+                            <input type="email" id="email" name="email" required class="floating-input">
+                            <label for="email" class="floating-label">Your Email</label>
+                        </div>
+                        <div class="floating-label-group">
+                            <input type="text" id="subject" name="subject" required class="floating-input">
+                            <label for="subject" class="floating-label">Subject</label>
+                        </div>
+                        <div class="floating-label-group">
+                            <textarea id="message" name="message" rows="5" required class="floating-input"></textarea>
+                            <label for="message" class="floating-label">Your Message</label>
+                        </div>
+                        <button type="submit" class="w-full cta-button">
+                            <span class="button-text">Send Message</span>
+                            <span class="button-loading hidden">Sending...</span>
+                        </button>
+                    </form>
+                    <div id="form-success" class="hidden mt-4 p-4 bg-green-500/20 border border-green-500 rounded-lg">
+                        <p class="text-green-400">Thank you! Your message has been sent successfully.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark-blue/80 py-12 border-t border-subtle-grey/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <div class="text-3xl font-bold text-accent-orange mb-6 glow-text">HanzalahCode</div>
+                <div class="flex justify-center space-x-6 mb-8">
+                    <a href="#" class="social-icon">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/>
+                        </svg>
+                    </a>
+                    <a href="#" class="social-icon">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                        </svg>
+                    </a>
+                    <a href="#" class="social-icon">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                        </svg>
+                    </a>
+                    <a href="#" class="social-icon">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.041-3.439.219-.937 1.406-5.957 1.406-5.957s-.359-.72-.359-1.781c0-1.663.967-2.911 2.168-2.911 1.024 0 1.518.769 1.518 1.688 0 1.029-.653 2.567-.992 3.992-.285 1.193.6 2.165 1.775 2.165 2.128 0 3.768-2.245 3.768-5.487 0-2.861-2.063-4.869-5.008-4.869-3.41 0-5.409 2.562-5.409 5.199 0 1.033.394 2.143.889 2.741.099.12.112.225.085.345-.09.375-.293 1.199-.334 1.363-.053.225-.172.271-.402.165-1.495-.69-2.433-2.878-2.433-4.646 0-3.776 2.748-7.252 7.92-7.252 4.158 0 7.392 2.967 7.392 6.923 0 4.135-2.607 7.462-6.233 7.462-1.214 0-2.357-.629-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24.009c6.624 0 11.99-5.367 11.99-11.988C24.007 5.367 18.641.001 12.017.001z"/>
+                        </svg>
+                    </a>
+                </div>
+                <div class="border-t border-subtle-grey/20 pt-8">
+                    <p class="text-subtle-grey">&copy; 2024 HanzalahCode. All rights reserved.</p>
+                    <button id="back-to-top" class="mt-4 text-accent-orange hover:text-white transition-colors duration-300">
+                        Back to Top ↑
+                    </button>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed top-20 right-4 bg-accent-orange text-white px-6 py-3 rounded-lg shadow-lg transform translate-x-full transition-transform duration-300 z-50">
+        <div class="flex items-center space-x-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+            </svg>
+            <span id="toast-message">Action completed!</span>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
